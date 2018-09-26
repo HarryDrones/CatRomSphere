@@ -1,3 +1,5 @@
+Yhr 
+
 
 
 CatRomSphere
@@ -5,3 +7,4 @@ Processing code of spherical globe and circles of equal altitude.  No special li
 
 One known instance where it will draw a mess is if you rotate the globe as it is drawing and release the mouse, then click and grab it and rotate again before it finishes drawing.
 
+The application.windows64 directory is a standalone export of the application.  To use it, you dont need Processing, since the directory includes everything needed to run the program.  Download that directory and click on the CatRomSphere.exe file. 
