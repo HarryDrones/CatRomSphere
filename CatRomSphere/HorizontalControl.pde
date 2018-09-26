@@ -81,8 +81,8 @@ class HorizontalControl {
    }
    
    
-   float getZoomValue(int x) {
-      if ((x >= minX) && (x <= (maxX - sliderWidth/2))) {
+   float getZoomValue(int x, int y) {
+      if ((x >= minX) && (x <= (maxX - sliderWidth/2)) && (y > (height - height/3))) {
          sliderX = (int) (x - (sliderWidth/2));     
          if (sliderX < minX) { 
             sliderX = minX; 
@@ -95,7 +95,8 @@ class HorizontalControl {
    
    void updateZoomSlider(float value) {
       int tempX = (int) (value / valuePerX) + minX;
-      if ((tempX >= minX) && (tempX <= (maxX+sliderWidth))) {
+      
+      if ( (tempX >= minX) && (tempX <= (maxX+sliderWidth))  ) {
          sliderValue = value;
          sliderX = tempX;
       }
@@ -114,6 +115,6 @@ class HorizontalControl {
       int sliderLeft = (int) (sliderX - (sliderWidth/2)) - slop;
       int sliderRight = sliderX + sliderWidth + slop;
     //  return ((y >= sliderY + height - height/4) && (y <= (sliderY + height - height/4    + sliderHeight)) && (x >= sliderLeft)  && (x <= sliderRight) || draggingZoomSlider );
-           return ((y >= sliderY + height - height/4 - sliderHeight/2) && (y <= (sliderY + height - height/4 + sliderHeight*2 )) && (x >= sliderLeft)  && (x <= sliderRight) || draggingZoomSlider );
+           return ((y >= sliderY + height - height/4 - sliderHeight/2) && (y <= (sliderY + height - height/4 + sliderHeight*2 )) && (x >= sliderLeft )  && (x <= sliderRight ) || draggingZoomSlider );
    } 
 }
