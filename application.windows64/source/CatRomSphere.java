@@ -67,7 +67,7 @@ int [] colors = new int[7];
 
       float alt = radians(-77.79f);
 //Controls controls;
-boolean released = false;
+boolean released = true;
 
 Controls controls;
 HorizontalControl controlX;
@@ -106,32 +106,33 @@ public void draw() {
 
   
     if (mousePressed) {
-     if( (showControls == 1) && (controls.isZoomSliderEvent(mouseX, mouseY))){ // || ( showControls == 1 && controlX.isZoomSliderEvent(mouseX,mouseY))) {
+     if( (showControls == 1) && (controls.isZoomSliderEvent(mouseX, mouseY)) || ( showControls == 1 && controlX.isZoomSliderEvent(mouseX,mouseY))) {
         draggingZoomSlider = true;
        
 zoom = controls.getZoomValue(mouseY);
-       
+ tzoom = controlX.getZoomValue(mouseX,mouseY);      
    //    tzoom = controlX.getZoomValue(mouseX);   
      
 
      // MousePress - Rotation Adjustment
-     }/* else if (!draggingZoomSlider) {
+  //   }/* else if (!draggingZoomSlider) {
       //  if (released != false){
-         velocityX += (mouseY-pmouseY) * 0.01;
-         velocityY -= (mouseX-pmouseX) * 0.01;
-      //  }
-     } */
+    //     velocityX += (mouseY-pmouseY) * 0.01;
+    //     velocityY -= (mouseX-pmouseX) * 0.01;
+      //  }*/
+     } 
 
-else if ( showControls == 1 && controlX.isZoomSliderEvent(mouseX,mouseY)){
+//else if ( showControls == 1 && controlX.isZoomSliderEvent(mouseX,mouseY)){
       //  draggingZoomSlider = true;
         
-      tzoom = controlX.getZoomValue(mouseX);
+    //  tzoom = controlX.getZoomValue(mouseX);
       
            // MousePress - Rotation Adjustment
- } else if (!draggingZoomSlider) {
-        if (released = true){
+  else if (!draggingZoomSlider) {
+        if (released == true){
          velocityX += (mouseY-pmouseY) * 0.01f;
          velocityY -= (mouseX-pmouseX) * 0.01f;
+        // draggingZoomSlider = false;
         }
        
      } 
@@ -143,7 +144,7 @@ else if ( showControls == 1 && controlX.isZoomSliderEvent(mouseX,mouseY)){
   }
 
   
-  println(degrees((float)alt));
+//  println(degrees((float)alt));
 
 
 
@@ -167,8 +168,8 @@ else if ( showControls == 1 && controlX.isZoomSliderEvent(mouseX,mouseY)){
 
 public void mouseReleased() {
    //released = false;
-    draggingZoomSlider = false;
-if (released == true){
+   // draggingZoomSlider = false;
+if (released == true  && draggingZoomSlider == true){
         alt = (map(zoom,texture.height-texture.height,texture.height,radians(-90),radians(90)));
        // GHA = (map(tzoom, texture.width - texture.width, texture.width, radians(-180),radians(180)));
          GHA = (map(tzoom,texture.width - texture.width,texture.width, radians(-180),radians(180)));
@@ -177,10 +178,11 @@ if (released == true){
           thread( "getPoints");
             renderGlobe();
 }
+draggingZoomSlider = false;
 }
 
 public boolean getPoints(){
-    released = false;   
+  //  released = false;   
   Mz = Rz(Math.toRadians(360.0f) - GHA, Mz);
   
   My =  Ry(Math.toRadians(90.0f) - dec, My);
@@ -189,7 +191,8 @@ public boolean getPoints(){
 
   for( double L0 = -180.0f; L0 <= 180.0f; L0 += .1f )
     {
-    
+    released = false;
+    println("top of For LooP; " + released);
       vv =  VectorSpherical2Cartesian(alt,Math.toRadians(L0) );
 
       vy =  MatrixVecProd( My, vv, vy );
@@ -214,12 +217,15 @@ public boolean getPoints(){
       texture.curveVertex(x[w],y[w]);
       texture.endShape();
       texture.endDraw();
-   
+   released = true;
     }
+    
+
       w++;
-      if (w == 3600){
-         released = true;
-      }
+
+     // }
+      println(released);
+      println("Before return statement: " + released);
 return released;
 }
 
@@ -669,8 +675,8 @@ class HorizontalControl {
    }
    
    
-   public float getZoomValue(int x) {
-      if ((x >= minX) && (x <= (maxX - sliderWidth/2))) {
+   public float getZoomValue(int x, int y) {
+      if ((x >= minX) && (x <= (maxX - sliderWidth/2)) && (y > (height - height/3))) {
          sliderX = (int) (x - (sliderWidth/2));     
          if (sliderX < minX) { 
             sliderX = minX; 
@@ -683,7 +689,8 @@ class HorizontalControl {
    
    public void updateZoomSlider(float value) {
       int tempX = (int) (value / valuePerX) + minX;
-      if ((tempX >= minX) && (tempX <= (maxX+sliderWidth))) {
+      
+      if ( (tempX >= minX) && (tempX <= (maxX+sliderWidth))  ) {
          sliderValue = value;
          sliderX = tempX;
       }
@@ -702,7 +709,7 @@ class HorizontalControl {
       int sliderLeft = (int) (sliderX - (sliderWidth/2)) - slop;
       int sliderRight = sliderX + sliderWidth + slop;
     //  return ((y >= sliderY + height - height/4) && (y <= (sliderY + height - height/4    + sliderHeight)) && (x >= sliderLeft)  && (x <= sliderRight) || draggingZoomSlider );
-           return ((y >= sliderY + height - height/4 - sliderHeight/2) && (y <= (sliderY + height - height/4 + sliderHeight*2 )) && (x >= sliderLeft)  && (x <= sliderRight) || draggingZoomSlider );
+           return ((y >= sliderY + height - height/4 - sliderHeight/2) && (y <= (sliderY + height - height/4 + sliderHeight*2 )) && (x >= sliderLeft )  && (x <= sliderRight ) || draggingZoomSlider );
    } 
 }
   public void settings() {  size(400, 300, P3D);  smooth(); }
